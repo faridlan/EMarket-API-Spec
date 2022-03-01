@@ -1,0 +1,110 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "RESTful API for EMarket",
+        "description": "RESTful API users EMarket",
+        "contact": {
+            "name": "Faridlan Nul Hakim",
+            "email": "faridlannulhakim@gmail.com",
+            "url": "https://faridlan.com"
+        },
+        "version": "1"
+    },
+    "servers": [{
+        "description": "RESTful API EMarket Server",
+        "url": "http://localhost:8080"
+    }],
+    "paths": {
+        "/users": {
+            "get": {
+                "tags": ["Users"],
+                "summary": "Get All Users",
+                "description": "Get All Active Users EMarket",
+                "parameters": [{
+                        "name": "email",
+                        "in": "query",
+                        "required": false,
+                        "description": "Search by user email",
+                        "schema": {
+                            "type": "string",
+                            "nullable": true
+                        },
+                        "examples": {
+                            "udin@gmail.com": {
+                                "description": "Example for email udin",
+                                "value": "udin@gmail.com"
+                            },
+                            "faridlan@gmail.com": {
+                                "description": "Example for email faridlan",
+                                "value": "faridlan@gmail.com"
+                            }
+                        }
+                    },
+                    {
+                        "name": "username",
+                        "in": "query",
+                        "required": false,
+                        "description": "Search by username",
+                        "schema": {
+                            "type": "string",
+                            "nullable": true
+                        },
+                        "examples": {
+                            "udin": {
+                                "description": "Example for usernmae udin",
+                                "value": "udin"
+                            },
+                            "faridlan": {
+                                "description": "Example for usernmae faridlan",
+                                "value": "faridlan"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get all users",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "username": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "password": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Users"]
+            }
+        },
+        "/users/{id}": {
+            "put": {
+                "tags": ["Users"]
+            }
+        },
+        "/users/{id}/login": {
+            "get": {
+                "tags": ["Users"]
+            }
+        }
+    },
+    "components": {}
+}
