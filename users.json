@@ -1,5 +1,5 @@
 {
-    "openapi": "3.0.1",
+    "openapi": "3.0.3",
     "info": {
         "title": "RESTful API for EMarket",
         "description": "RESTful API users EMarket",
@@ -67,24 +67,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer"
-                                            },
-                                            "username": {
-                                                "type": "string"
-                                            },
-                                            "email": {
-                                                "type": "string"
-                                            },
-                                            "password": {
-                                                "type": "string"
-                                            }
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/ArrayUser"
                                 }
                             }
                         }
@@ -92,7 +75,41 @@
                 }
             },
             "post": {
-                "tags": ["Users"]
+                "tags": ["Users"],
+                "summary": "Create new users",
+                "description": "Create new users to database",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "examples": {
+                                "udin": {
+                                    "description": "Exmple for create user",
+                                    "value": {
+                                        "username": "udin",
+                                        "email": "udin21@gmail.com",
+                                        "password": "12345678"
+                                    }
+                                }
+                            },
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOrUpdataUser"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success create user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Users"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/users/{id}": {
@@ -106,5 +123,47 @@
             }
         }
     },
-    "components": {}
+    "components": {
+        "schemas": {
+            "Users": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CreateOrUpdataUser": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 8
+                    }
+                }
+            },
+            "ArrayUser": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Users"
+                }
+            }
+        }
+    }
 }
