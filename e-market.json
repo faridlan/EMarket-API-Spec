@@ -1,664 +1,910 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "RESTful API EMarket",
-    "description": "RESTful API for EMarket",
-    "contact": {
-      "name": "Faridlan Nul Hakim",
-      "email": "faridlannulhakim@gmail.com"
+    "openapi": "3.0.0",
+    "info": {
+        "title": "RESTful API EMarket",
+        "description": "RESTful API for EMarket",
+        "contact": {
+            "name": "Faridlan Nul Hakim",
+            "email": "faridlannulhakim@gmail.com"
+        },
+        "version": "1"
     },
-    "version": "1"
-  },
-  "servers": [
-    {
-      "description": "RESTful API EMarket Server",
-      "url": "0.0.0.0:3000/api"
+    "servers": [{
+        "description": "RESTful API EMarket Server",
+        "url": "0.0.0.0:3000/api"
+    }],
+    "paths": {
+        "/register": {
+            "post": {
+                "tags": ["Auth"],
+                "summary": "Create new user",
+                "description": "Create new user to database",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "minLength": 3,
+                                        "maxLength": 100
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "minLength": 8
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success create a user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "number"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "number"
+                                                },
+                                                "username": {
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "tags": ["Auth"],
+                "summary": "Login user",
+                "description": "Authentication user to get token",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "example": "Udin"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "12345"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success create a token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "number",
+                                            "example": 200
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "username": {
+                                                    "type": "string",
+                                                    "example": "udin"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "udin@gmail.com"
+                                                },
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ1ZGluIiwiZW1haWwiOiJ1ZGluQGdtYWlsLmNvbSIsImV4cCI6MTY0OTMxNjUxMn0.QprXHN_nJk8xlvM482QkJh6WdjA8QZTqKK7M0Yger-0"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/profile": {
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Auth"],
+                "summary": "Info user profile",
+                "description": "Get all data of user",
+                "responses": {
+                    "200": {
+                        "description": "Get data user by id, userID got from token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/profile"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/profile/{userId}": {
+            "put": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Auth"],
+                "summary": "Update profile",
+                "description": "Update profile by userId",
+                "requestBody": {
+                    "description": "Update profile",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "minLength": 3,
+                                        "maxLength": 100
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "image_url": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success update profile",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/profile"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [{
+                    "name": "userId",
+                    "in": "path",
+                    "description": "User Id",
+                    "required": true,
+                    "schema": {
+                        "type": "number"
+                    }
+                }]
+            }
+        },
+        "/users/change-password": {
+            "put": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Auth"],
+                "summary": "Change user password",
+                "description": "Change user password",
+                "requestBody": {
+                    "description": "Update password to db",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "old_password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "new_password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success change password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "number"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/addresses/{addressId}": {
+            "put": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Address"],
+                "summary": "Update address",
+                "description": "",
+                "requestBody": {
+                    "description": "Update a address to db",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "number"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "province": {
+                                                "type": "string"
+                                            },
+                                            "city": {
+                                                "type": "string"
+                                            },
+                                            "post_code": {
+                                                "type": "integer"
+                                            },
+                                            "comment": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success update address",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "number"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "number"
+                                                },
+                                                "user_id": {
+                                                    "type": "number"
+                                                },
+                                                "province": {
+                                                    "type": "string"
+                                                },
+                                                "city": {
+                                                    "type": "string"
+                                                },
+                                                "post_code": {
+                                                    "type": "integer"
+                                                },
+                                                "comment": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [{
+                    "name": "addressId",
+                    "in": "path",
+                    "description": "Address Id",
+                    "required": true,
+                    "schema": {
+                        "type": "number"
+                    }
+                }]
+            }
+        },
+        "/products": {
+            "get": {
+                "tags": ["Home"]
+            }
+        },
+        "/products/{productId}": {
+            "get": {
+                "tags": ["Product Detail"],
+                "summary": "",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "Success get product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "number"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "number"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "category": {
+                                                    "type": "string"
+                                                },
+                                                "price": {
+                                                    "type": "number"
+                                                },
+                                                "qty": {
+                                                    "type": "number"
+                                                },
+                                                "image_url": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": []
+            }
+        },
+        "/carts": {
+            "post": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Product Detail"],
+                "summary": "",
+                "description": "",
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "number"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "user_id": {
+                                                "type": "number"
+                                            },
+                                            "product_id": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "number"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/carts"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Shopping Cart"],
+                "summary": "",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "number"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/cartsArray"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/carts/products/{productId}": {
+            "put": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Shopping Cart"],
+                "summary": "Change quantitiy product",
+                "description": "Change / update quantitiy product in cart",
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "qty": {
+                                        "type": "number"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "number"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "cart_id": {
+                                                    "type": "number"
+                                                },
+                                                "product_id": {
+                                                    "type": "number"
+                                                },
+                                                "qty": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [{
+                    "name": "productId",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "number"
+                    }
+                }]
+            },
+            "delete": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Shopping Cart"],
+                "summary": "",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "number"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [{
+                    "name": "productId",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "number"
+                    }
+                }]
+            }
+        },
+        "/users/{userId}/addresses": {
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Address", "Shipping Address"],
+                "summary": "Get all addresses",
+                "description": "Get all user addresses",
+                "responses": {
+                    "200": {
+                        "description": "Success get all user addresses",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "number"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "number"
+                                                    },
+                                                    "user_id": {
+                                                        "type": "number"
+                                                    },
+                                                    "province": {
+                                                        "type": "string"
+                                                    },
+                                                    "city": {
+                                                        "type": "string"
+                                                    },
+                                                    "post_code": {
+                                                        "type": "integer"
+                                                    },
+                                                    "comment": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [{
+                    "name": "productId",
+                    "in": "path",
+                    "description": "Product Id",
+                    "required": true,
+                    "schema": {
+                        "type": "number"
+                    }
+                }]
+            }
+        },
+        "/user/addresses": {
+            "post": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Address", "Shipping Address"],
+                "summary": "Add new address",
+                "description": "",
+                "requestBody": {
+                    "description": "Create new address to db",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "number"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "province": {
+                                                "type": "string"
+                                            },
+                                            "city": {
+                                                "type": "string"
+                                            },
+                                            "post_code": {
+                                                "type": "integer"
+                                            },
+                                            "comment": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success create new address",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "number"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "number"
+                                                },
+                                                "user_id": {
+                                                    "type": "number"
+                                                },
+                                                "province": {
+                                                    "type": "string"
+                                                },
+                                                "city": {
+                                                    "type": "string"
+                                                },
+                                                "post_code": {
+                                                    "type": "integer"
+                                                },
+                                                "comment": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/orders": {
+            "post": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Shipping Address"],
+                "summary": "",
+                "description": "",
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "cart_id": {
+                                            "type": "number"
+                                        },
+                                        "address_id": {
+                                            "type": "number"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "number"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{orderId}": {
+            "get": {
+                "tags": ["Detail Order"]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "profile": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "image_url": {
+                        "type": "string"
+                    }
+                }
+            },
+            "carts": {
+                "type": "object",
+                "properties": {
+                    "cart_id": {
+                        "type": "number"
+                    },
+                    "product_id": {
+                        "type": "number"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "qty": {
+                        "type": "number"
+                    },
+                    "price": {
+                        "type": "number"
+                    }
+                }
+            },
+            "cartsArray": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/carts"
+                }
+            }
+        }
     }
-  ],
-  "paths": {
-    "/register": {
-      "post": {
-        "tags": ["Auth"],
-        "summary": "Create new user",
-        "description": "Create new user to database",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "username": {
-                    "type": "string",
-                    "minLength": 3,
-                    "maxLength": 100
-                  },
-                  "email": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "minLength": 8
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success create a user",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "number"
-                    },
-                    "status": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "number"
-                        },
-                        "username": {
-                          "type": "string"
-                        },
-                        "email": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users/login": {
-      "post": {
-        "tags": ["Auth"],
-        "summary": "Login user",
-        "description": "Authentication user to get token",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "username": {
-                    "type": "string",
-                    "example": "Udin"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "example": "12345"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success create a token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "number",
-                      "example": 200
-                    },
-                    "status": {
-                      "type": "string",
-                      "example": "OK"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "number",
-                          "example": 1
-                        },
-                        "username": {
-                          "type": "string",
-                          "example": "udin"
-                        },
-                        "email": {
-                          "type": "string",
-                          "example": "udin@gmail.com"
-                        },
-                        "token": {
-                          "type": "string",
-                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ1ZGluIiwiZW1haWwiOiJ1ZGluQGdtYWlsLmNvbSIsImV4cCI6MTY0OTMxNjUxMn0.QprXHN_nJk8xlvM482QkJh6WdjA8QZTqKK7M0Yger-0"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users/profile": {
-      "get": {
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "tags": ["Auth"],
-        "summary": "Info user profile",
-        "description": "Get all data of user",
-        "responses": {
-          "200": {
-            "description": "Get data user by id, userID got from token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/profile"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users/profile/{userId}": {
-      "put": {
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "tags": ["Auth"],
-        "summary": "Update profile",
-        "description": "Update profile by userId",
-        "requestBody": {
-          "description": "Update profile",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "username": {
-                    "type": "string",
-                    "minLength": 3,
-                    "maxLength": 100
-                  },
-                  "email": {
-                    "type": "string"
-                  },
-                  "image_url": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success update profile",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/profile"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "description": "User Id",
-            "required": true,
-            "schema": {
-              "type": "number"
-            }
-          }
-        ]
-      }
-    },
-    "/users/change-password": {
-      "put": {
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "tags": ["Auth"],
-        "summary": "Change user password",
-        "description": "Change user password",
-        "requestBody": {
-          "description": "Update password to db",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "old_password": {
-                    "type": "string",
-                    "format": "password"
-                  },
-                  "new_password": {
-                    "type": "string",
-                    "format": "password"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success change password",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "number"
-                    },
-                    "status": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "object"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users/addresses/{addressId}": {
-      "put": {
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "tags": ["Address"],
-        "summary": "Update address",
-        "description": "",
-        "requestBody": {
-          "description": "Update a address to db",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "code": {
-                    "type": "number"
-                  },
-                  "status": {
-                    "type": "string"
-                  },
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "province": {
-                        "type": "string"
-                      },
-                      "city": {
-                        "type": "string"
-                      },
-                      "post_code": {
-                        "type": "integer"
-                      },
-                      "comment": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success update address",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "number"
-                    },
-                    "status": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "number"
-                        },
-                        "user_id": {
-                          "type": "number"
-                        },
-                        "province": {
-                          "type": "string"
-                        },
-                        "city": {
-                          "type": "string"
-                        },
-                        "post_code": {
-                          "type": "integer"
-                        },
-                        "comment": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "addressId",
-            "in": "path",
-            "description": "Address Id",
-            "required": true,
-            "schema": {
-              "type": "number"
-            }
-          }
-        ]
-      }
-    },
-    "/products": {
-      "get": {
-        "tags": ["Home"]
-      }
-    },
-    "/products/{productId}": {
-      "get": {
-        "tags": ["Product Detail"],
-        "summary": "",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "Success get product",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "number"
-                    },
-                    "status": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "number"
-                        },
-                        "name": {
-                          "type": "string"
-                        },
-                        "category": {
-                          "type": "string"
-                        },
-                        "price": {
-                          "type": "number"
-                        },
-                        "qty": {
-                          "type": "number"
-                        },
-                        "image_url": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/carts": {
-      "post": {
-        "tags": ["Product Detail"]
-      },
-      "get": {
-        "tags": ["Shopping Cart"]
-      }
-    },
-    "/carts/products/{productId}": {
-      "put": {
-        "tags": ["Shopping Cart"]
-      },
-      "delete": {
-        "tags": ["Shopping Cart"]
-      }
-    },
-    "/users/{userId}/addresses": {
-      "get": {
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "tags": ["Address", "Shipping Address"],
-        "summary": "Get all addresses",
-        "description": "Get all user addresses",
-        "responses": {
-          "200": {
-            "description": "Success get all user addresses",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "number"
-                    },
-                    "status": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "number"
-                          },
-                          "user_id": {
-                            "type": "number"
-                          },
-                          "province": {
-                            "type": "string"
-                          },
-                          "city": {
-                            "type": "string"
-                          },
-                          "post_code": {
-                            "type": "integer"
-                          },
-                          "comment": {
-                            "type": "string"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "productId",
-            "in": "path",
-            "description": "Product Id",
-            "required": true,
-            "schema": {
-              "type": "number"
-            }
-          }
-        ]
-      }
-    },
-    "/user/addresses": {
-      "post": {
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "tags": ["Address", "Shipping Address"],
-        "summary": "Add new address",
-        "description": "",
-        "requestBody": {
-          "description": "Create new address to db",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "code": {
-                    "type": "number"
-                  },
-                  "status": {
-                    "type": "string"
-                  },
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "province": {
-                        "type": "string"
-                      },
-                      "city": {
-                        "type": "string"
-                      },
-                      "post_code": {
-                        "type": "integer"
-                      },
-                      "comment": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success create new address",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "number"
-                    },
-                    "status": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "number"
-                        },
-                        "user_id": {
-                          "type": "number"
-                        },
-                        "province": {
-                          "type": "string"
-                        },
-                        "city": {
-                          "type": "string"
-                        },
-                        "post_code": {
-                          "type": "integer"
-                        },
-                        "comment": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/orders": {
-      "post": {
-        "tags": ["Shipping Address"]
-      }
-    },
-    "/orders/{orderId}": {
-      "get": {
-        "tags": ["Detail Order"]
-      }
-    }
-  },
-  "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
-      }
-    },
-    "schemas": {
-      "profile": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number"
-          },
-          "username": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "image_url": {
-            "type": "string"
-          }
-        }
-      }
-    }
-  }
 }
