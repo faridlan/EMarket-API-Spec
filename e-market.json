@@ -281,6 +281,35 @@
             }
         },
         "/users/addresses/{addressId}": {
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Shipping Address"],
+                "summary": "Get address by id",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "Success get address",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/addressResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [{
+                    "name": "addressId",
+                    "in": "path",
+                    "description": "Address Id",
+                    "required": true,
+                    "schema": {
+                        "type": "number"
+                    }
+                }]
+            },
             "put": {
                 "security": [{
                     "bearerAuth": []
@@ -304,10 +333,16 @@
                                     "data": {
                                         "type": "object",
                                         "properties": {
-                                            "province": {
+                                            "name": {
                                                 "type": "string"
                                             },
-                                            "city": {
+                                            "handphone_number": {
+                                                "type": "string"
+                                            },
+                                            "street": {
+                                                "type": "string"
+                                            },
+                                            "districk": {
                                                 "type": "string"
                                             },
                                             "post_code": {
@@ -329,38 +364,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "code": {
-                                            "type": "number"
-                                        },
-                                        "status": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "number"
-                                                },
-                                                "user_id": {
-                                                    "type": "number"
-                                                },
-                                                "province": {
-                                                    "type": "string"
-                                                },
-                                                "city": {
-                                                    "type": "string"
-                                                },
-                                                "post_code": {
-                                                    "type": "integer"
-                                                },
-                                                "comment": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/addressResponse"
                                 }
                             }
                         }
@@ -379,7 +383,21 @@
         },
         "/products": {
             "get": {
-                "tags": ["Home"]
+                "tags": ["Home"],
+                "summary": "Get All products",
+                "description": "Get All products",
+                "responses": {
+                    "200": {
+                        "description": "Success get products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/productArray"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/products/{productId}": {
@@ -393,38 +411,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "code": {
-                                            "type": "number"
-                                        },
-                                        "status": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "number"
-                                                },
-                                                "name": {
-                                                    "type": "string"
-                                                },
-                                                "category": {
-                                                    "type": "string"
-                                                },
-                                                "price": {
-                                                    "type": "number"
-                                                },
-                                                "qty": {
-                                                    "type": "number"
-                                                },
-                                                "image_url": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/productsResponse"
                                 }
                             }
                         }
@@ -448,22 +435,11 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "code": {
-                                        "type": "number"
+                                    "product_id": {
+                                        "type": "integer"
                                     },
-                                    "status": {
-                                        "type": "string"
-                                    },
-                                    "data": {
-                                        "type": "object",
-                                        "properties": {
-                                            "user_id": {
-                                                "type": "number"
-                                            },
-                                            "product_id": {
-                                                "type": "number"
-                                            }
-                                        }
+                                    "quantity": {
+                                        "type": "integer"
                                     }
                                 }
                             }
@@ -498,7 +474,7 @@
                 "security": [{
                     "bearerAuth": []
                 }],
-                "tags": ["Shopping Cart"],
+                "tags": ["Shopping Cart", "Shipping Address"],
                 "summary": "",
                 "description": "",
                 "responses": {
@@ -524,6 +500,64 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Shopping Cart"],
+                "summary": "",
+                "description": "",
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "product_id": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "number"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [{
+                    "name": "productId",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "number"
+                    }
+                }]
             }
         },
         "/carts/products/{productId}": {
@@ -564,58 +598,7 @@
                                             "type": "string"
                                         },
                                         "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "cart_id": {
-                                                    "type": "number"
-                                                },
-                                                "product_id": {
-                                                    "type": "number"
-                                                },
-                                                "qty": {
-                                                    "type": "number"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "parameters": [{
-                    "name": "productId",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "number"
-                    }
-                }]
-            },
-            "delete": {
-                "security": [{
-                    "bearerAuth": []
-                }],
-                "tags": ["Shopping Cart"],
-                "summary": "",
-                "description": "",
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "code": {
-                                            "type": "number"
-                                        },
-                                        "status": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {}
+                                            "$ref": "#/components/schemas/carts"
                                         }
                                     }
                                 }
@@ -633,72 +616,7 @@
                 }]
             }
         },
-        "/users/{userId}/addresses": {
-            "get": {
-                "security": [{
-                    "bearerAuth": []
-                }],
-                "tags": ["Address", "Shipping Address"],
-                "summary": "Get all addresses",
-                "description": "Get all user addresses",
-                "responses": {
-                    "200": {
-                        "description": "Success get all user addresses",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "code": {
-                                            "type": "number"
-                                        },
-                                        "status": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "number"
-                                                    },
-                                                    "user_id": {
-                                                        "type": "number"
-                                                    },
-                                                    "province": {
-                                                        "type": "string"
-                                                    },
-                                                    "city": {
-                                                        "type": "string"
-                                                    },
-                                                    "post_code": {
-                                                        "type": "integer"
-                                                    },
-                                                    "comment": {
-                                                        "type": "string"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "parameters": [{
-                    "name": "productId",
-                    "in": "path",
-                    "description": "Product Id",
-                    "required": true,
-                    "schema": {
-                        "type": "number"
-                    }
-                }]
-            }
-        },
-        "/user/addresses": {
+        "/users/addresses": {
             "post": {
                 "security": [{
                     "bearerAuth": []
@@ -722,10 +640,16 @@
                                     "data": {
                                         "type": "object",
                                         "properties": {
-                                            "province": {
+                                            "name": {
                                                 "type": "string"
                                             },
-                                            "city": {
+                                            "handphone_number": {
+                                                "type": "string"
+                                            },
+                                            "street": {
+                                                "type": "string"
+                                            },
+                                            "districk": {
                                                 "type": "string"
                                             },
                                             "post_code": {
@@ -747,38 +671,27 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "code": {
-                                            "type": "number"
-                                        },
-                                        "status": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "number"
-                                                },
-                                                "user_id": {
-                                                    "type": "number"
-                                                },
-                                                "province": {
-                                                    "type": "string"
-                                                },
-                                                "city": {
-                                                    "type": "string"
-                                                },
-                                                "post_code": {
-                                                    "type": "integer"
-                                                },
-                                                "comment": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/address"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Address", "Shipping Address"],
+                "summary": "Get all addresses",
+                "description": "Get all user addresse by User Id",
+                "responses": {
+                    "200": {
+                        "description": "Success get all user addresses",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/addressArray"
                                 }
                             }
                         }
@@ -808,6 +721,9 @@
                                         },
                                         "address_id": {
                                             "type": "number"
+                                        },
+                                        "quantity": {
+                                            "type": "integer"
                                         }
                                     }
                                 }
@@ -821,22 +737,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "code": {
-                                            "type": "number"
-                                        },
-                                        "status": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {}
-                                            }
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/orderResponse"
                                 }
                             }
                         }
@@ -846,7 +747,24 @@
         },
         "/orders/{orderId}": {
             "get": {
-                "tags": ["Detail Order"]
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Detail Order"],
+                "summary": "",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/orderResponse"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     },
@@ -859,6 +777,57 @@
             }
         },
         "schemas": {
+            "address": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "username": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "handphone_number": {
+                        "type": "string"
+                    },
+                    "street": {
+                        "type": "string"
+                    },
+                    "districk": {
+                        "type": "string"
+                    },
+                    "post_code": {
+                        "type": "integer"
+                    },
+                    "comment": {
+                        "type": "string"
+                    }
+                }
+            },
+            "addressResponse": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/address"
+                    }
+                }
+            },
             "profile": {
                 "type": "object",
                 "properties": {
@@ -876,25 +845,61 @@
                     }
                 }
             },
+            "products": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "product_name": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "category_name": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "price": {
+                        "type": "number"
+                    },
+                    "qty": {
+                        "type": "number"
+                    },
+                    "image_url": {
+                        "type": "string"
+                    }
+                }
+            },
+            "productsResponse": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/products"
+                    }
+                }
+            },
             "carts": {
                 "type": "object",
                 "properties": {
                     "cart_id": {
                         "type": "number"
                     },
-                    "product_id": {
-                        "type": "number"
+                    "product": {
+                        "$ref": "#/components/schemas/products"
                     },
-                    "name": {
-                        "type": "string"
-                    },
-                    "category": {
-                        "type": "string"
-                    },
-                    "qty": {
-                        "type": "number"
-                    },
-                    "price": {
+                    "quantity": {
                         "type": "number"
                     }
                 }
@@ -903,6 +908,61 @@
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/carts"
+                }
+            },
+            "addressArray": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/addressResponse"
+                }
+            },
+            "productArrayResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/productsResponse"
+                }
+            },
+            "productArray": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/productsResponse"
+                }
+            },
+            "orderResponse": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "order_id": {
+                                "type": "integer"
+                            },
+                            "address": {
+                                "$ref": "#/components/schemas/address"
+                            },
+                            "detail": {
+                                "$ref": "#/components/schemas/productArray"
+                            },
+                            "total": {
+                                "type": "integer"
+                            },
+                            "order_date": {
+                                "type": "string"
+                            },
+                            "status_order": {
+                                "type": "integer"
+                            },
+                            "payment": {
+                                "type": "integer"
+                            }
+                        }
+                    }
                 }
             }
         }
