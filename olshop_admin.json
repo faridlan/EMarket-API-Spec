@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "RESTful API Olshop",
-        "description": "RESTful API for Olshop",
+        "description": "RESTful API for Olshop For Admin (root)",
         "contact": {
             "name": "Faridlan Nul Hakim",
             "email": "faridlannulhakim@gmail.com"
@@ -14,54 +14,10 @@
         "url": "0.0.0.0:8080/api"
     }],
     "paths": {
-        "/register": {
-            "post": {
-                "tags": ["Auth"],
-                "summary": "Create new user",
-                "description": "Create new user to database",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "username": {
-                                        "type": "string",
-                                        "minLength": 3,
-                                        "maxLength": 100
-                                    },
-                                    "email": {
-                                        "type": "string"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "minLength": 8
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success create a user",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/userResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/login": {
             "post": {
                 "tags": ["Auth"],
-                "summary": "Login user",
+                "summary": "Login User",
                 "description": "Authentication user to get token",
                 "requestBody": {
                     "required": true,
@@ -72,12 +28,12 @@
                                 "properties": {
                                     "username": {
                                         "type": "string",
-                                        "example": "Udin"
+                                        "example": "admin"
                                     },
                                     "password": {
                                         "type": "string",
                                         "format": "password",
-                                        "example": "rahasia123"
+                                        "example": "admin"
                                     }
                                 }
                             }
@@ -117,17 +73,287 @@
                 }
             }
         },
-        "/myprofile": {
-            "get": {
+        "/logout": {
+            "post": {
                 "security": [{
                     "bearerAuth": []
                 }],
                 "tags": ["Auth"],
-                "summary": "Info user profile",
-                "description": "Get all data of user",
+                "summary": "Logout User",
+                "description": "Logout user for add to blacklist",
+                "responses": {
+                    "401": {
+                        "description": "Success logout",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "number",
+                                            "example": 401
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "UNAUTHORIZED"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/roles": {
+            "post": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Roles"],
+                "summary": "Post New Role",
+                "description": "Insert role to database",
+                "requestBody": {
+                    "description": "request for post role",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "role_name": {
+                                        "type": "string",
+                                        "required": ["true"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "Get data user by id, userID got from token, image can null",
+                        "description": "succes input role",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rolesResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Roles", "Users"],
+                "summary": "Get All Roles",
+                "description": "Get all roles from database",
+                "responses": {
+                    "200": {
+                        "description": "succes get role",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rolesResponses"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/roles/{roleId}": {
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Roles"],
+                "summary": "Get Role By Id Role",
+                "description": "Only get role with exist id",
+                "parameters": [{
+                    "name": "roleId",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "succes get role",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rolesResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Roles"],
+                "summary": "Update or Edit Role",
+                "description": "Update role with roleId",
+                "parameters": [{
+                    "name": "roleId",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "requestBody": {
+                    "description": "request for post role",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "role_name": {
+                                        "type": "string",
+                                        "required": ["true"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "succes get role",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rolesResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "post": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Users"],
+                "summary": "Post New User",
+                "description": "Insert user to database",
+                "requestBody": {
+                    "description": "request for post user, image_url can null",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/userCreateOrUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "succes input user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/userResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Users", "Addresses"],
+                "summary": "Get All User",
+                "description": "Get all exist user in database",
+                "responses": {
+                    "200": {
+                        "description": "succes get all user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/userResponses"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{userId}": {
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Users"],
+                "summary": "Get User By Id User",
+                "description": "Only get user with exist id",
+                "parameters": [{
+                    "name": "userId",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "succes get user by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/userResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Users"],
+                "summary": "Update or Edit User",
+                "description": "Update user, except user password",
+                "parameters": [{
+                    "name": "userId",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "requestBody": {
+                    "description": "request for update user, image_url can null",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/userCreateOrUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "succes update user",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -139,14 +365,14 @@
                 }
             }
         },
-        "/profile/image": {
+        "/users/image": {
             "post": {
                 "security": [{
                     "bearerAuth": []
                 }],
-                "tags": ["Auth"],
-                "summary": "Upload image profile",
-                "description": "Upload image profile to cloud storage",
+                "tags": ["Users"],
+                "summary": "Upload image users",
+                "description": "Upload image user profile to cloud storage",
                 "requestBody": {
                     "description": "Request a file image",
                     "required": true,
@@ -166,7 +392,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success uploag profile image",
+                        "description": "Success upload user profile image",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -183,106 +409,52 @@
                 }
             }
         },
-        "/profile/{userId}": {
-            "put": {
+        "/addresses": {
+            "post": {
                 "security": [{
                     "bearerAuth": []
                 }],
-                "tags": ["Auth"],
-                "summary": "Update profile",
-                "description": "Update profile by userId",
-                "parameters": [{
-                    "name": "userId",
-                    "in": "path",
-                    "description": "User Id",
-                    "required": true,
-                    "schema": {
-                        "type": "number"
-                    }
-                }],
+                "tags": ["Addresses"],
+                "summary": "Post New Address",
+                "description": "Insert address to database",
                 "requestBody": {
-                    "description": "Update profile",
+                    "description": "request for post address",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "username": {
-                                        "type": "string",
-                                        "minLength": 3,
-                                        "maxLength": 100
-                                    },
-                                    "email": {
-                                        "type": "string"
-                                    },
-                                    "image_url": {
-                                        "type": "string",
-                                        "nullable": true
-                                    }
-                                }
+                                "$ref": "#/components/schemas/addressCreateOrUpdate"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Success update profile",
+                        "description": "succes input user",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/user"
+                                    "$ref": "#/components/schemas/addressResponse"
                                 }
                             }
                         }
                     }
                 }
-            }
-        },
-        "/products": {
+            },
             "get": {
                 "security": [{
                     "bearerAuth": []
                 }],
-                "tags": ["Home"],
-                "summary": "Get All Products",
-                "description": "Get all exist products in database",
+                "tags": ["Addresses"],
+                "summary": "Get All Address",
+                "description": "Get all exist Address in database",
                 "responses": {
                     "200": {
-                        "description": "succes get all products",
+                        "description": "succes get all address",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/productsResponses"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/products/{productId}": {
-            "get": {
-                "security": [{
-                    "bearerAuth": []
-                }],
-                "tags": ["Detail Products"],
-                "summary": "Get Products By Id",
-                "description": "Get all exist product in database by id",
-                "parameters": [{
-                    "name": "productId",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string"
-                    }
-                }],
-                "responses": {
-                    "200": {
-                        "description": "succes get products by id",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/productsResponse"
+                                    "$ref": "#/components/schemas/addressResponses"
                                 }
                             }
                         }
@@ -295,7 +467,7 @@
                 "security": [{
                     "bearerAuth": []
                 }],
-                "tags": ["Addresses", "Checkout"],
+                "tags": ["Addresses"],
                 "summary": "Get Address By Id",
                 "description": "Get some address with id address",
                 "parameters": [{
@@ -395,32 +567,32 @@
                 }
             }
         },
-        "/addresses": {
+        "/categories": {
             "post": {
                 "security": [{
                     "bearerAuth": []
                 }],
-                "tags": ["Addresses", "Checkout"],
-                "summary": "Post New Address",
-                "description": "Insert address to database",
+                "tags": ["Categories"],
+                "summary": "Post New Category",
+                "description": "Insert category to database",
                 "requestBody": {
-                    "description": "request for post address",
+                    "description": "request for post category",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/addressCreateOrUpdate"
+                                "$ref": "#/components/schemas/categoriesCreateUpdate"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "succes input user",
+                        "description": "succes input category",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/addressResponse"
+                                    "$ref": "#/components/schemas/categoriesResponse"
                                 }
                             }
                         }
@@ -431,16 +603,16 @@
                 "security": [{
                     "bearerAuth": []
                 }],
-                "tags": ["Addresses", "Checkout"],
-                "summary": "Get All Address",
-                "description": "Get all exist Address in database",
+                "tags": ["Categories", "Products"],
+                "summary": "Get All Categories",
+                "description": "Get all exist categories in database",
                 "responses": {
                     "200": {
-                        "description": "succes get all address",
+                        "description": "succes get all Categories",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/addressResponses"
+                                    "$ref": "#/components/schemas/categoriesResponses"
                                 }
                             }
                         }
@@ -448,37 +620,177 @@
                 }
             }
         },
-        "/orders": {
+        "/categories/{categoryId}": {
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Categories"],
+                "summary": "Get Category By Id",
+                "description": "Get exist category in database by id",
+                "parameters": [{
+                    "name": "categoryId",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "succes get category by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/categoriesResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products": {
             "post": {
                 "security": [{
                     "bearerAuth": []
                 }],
-                "tags": ["Checkout"],
-                "summary": "Insert orders (checkout)",
-                "description": "Insert orders to database",
+                "tags": ["Products"],
+                "summary": "Post New Product",
+                "description": "Insert product to database",
                 "requestBody": {
-                    "description": "Request orders properties",
+                    "description": "request for post product",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "$ref": "#/components/schemas/productsCreateorUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "succes input product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/productsResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Products"],
+                "summary": "Get All Products",
+                "description": "Get all exist products in database",
+                "responses": {
+                    "200": {
+                        "description": "succes get all products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/productsResponses"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{productId}": {
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Products"],
+                "summary": "Get Products By Id",
+                "description": "Get all exist product in database by id",
+                "parameters": [{
+                    "name": "productId",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "succes get products by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/productsResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Products"],
+                "summary": "Update or Edit Product",
+                "description": "Update product",
+                "parameters": [{
+                    "name": "productId",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "requestBody": {
+                    "description": "request for update product",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/productsCreateorUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "succes update product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/productsResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/image": {
+            "post": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Products"],
+                "summary": "Upload image product",
+                "description": "Upload image product to cloud storage",
+                "requestBody": {
+                    "description": "Request a file image",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "address_id": {
-                                        "type": "number"
-                                    },
-                                    "detail": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "product_id": {
-                                                    "type": "string"
-                                                },
-                                                "qty": {
-                                                    "type": "number"
-                                                }
-                                            }
-                                        }
+                                    "imageProduct": {
+                                        "type": "string",
+                                        "format": "binary"
                                     }
                                 }
                             }
@@ -487,24 +799,61 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success Checkout",
+                        "description": "Success upload product image",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/detailOrderResponse"
+                                    "type": "object",
+                                    "properties": {
+                                        "image_url": {
+                                            "type": "string"
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            },
+            }
+        },
+        "/orders": {
             "get": {
                 "security": [{
                     "bearerAuth": []
                 }],
-                "tags": ["Detail Orders"],
+                "tags": ["Orders"],
                 "summary": "Get All Orders",
-                "description": "Get all exist orders in database by userId, get from token",
+                "description": "Get all exist orders in database",
+                "responses": {
+                    "200": {
+                        "description": "success get orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ordersResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/statusId": {
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Orders"],
+                "summary": "Get Orders With Status Id",
+                "description": "Get all exist orders in database with id status",
+                "parameters": [{
+                    "name": "statusId",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
                 "responses": {
                     "200": {
                         "description": "success get orders",
@@ -524,7 +873,7 @@
                 "security": [{
                     "bearerAuth": []
                 }],
-                "tags": ["Orders"],
+                "tags": ["Detail Orders"],
                 "summary": "Get Detail Orders",
                 "description": "Get detail orders in database",
                 "parameters": [{
@@ -549,31 +898,31 @@
                 }
             }
         },
-        "/order/payment/{orderId}": {
+        "/orders/status/{orderId}": {
             "put": {
                 "security": [{
                     "bearerAuth": []
                 }],
-                "tags": ["Payments"],
-                "summary": "Update order payment",
-                "description": "Update order payment",
+                "tags": ["Orders"],
+                "summary": "Change Status Order",
+                "description": "Change status order for customers",
                 "parameters": [{
                     "name": "orderId",
-                    "in": "path",
+                    "in": "query",
                     "required": true,
                     "schema": {
                         "type": "string"
                     }
                 }],
                 "requestBody": {
-                    "description": "Request a image url of payment image",
+                    "description": "request for change status order",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "image_url": {
+                                    "status_id": {
                                         "type": "string"
                                     }
                                 }
@@ -583,7 +932,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success update image url",
+                        "description": "success change status order",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -595,43 +944,82 @@
                 }
             }
         },
-        "/payments/image": {
+        "/statusOrders": {
             "post": {
                 "security": [{
                     "bearerAuth": []
                 }],
-                "tags": ["Payments"],
-                "summary": "Upload An Payment Image",
-                "description": "Upload Payment Image To Cloud Storage",
+                "tags": ["Status Orders"],
+                "summary": "Post New Status Order",
+                "description": "Insert status order to database",
                 "requestBody": {
-                    "description": "Request as file image",
+                    "description": "request for post status order",
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "paymentImage": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                }
+                                "$ref": "#/components/schemas/statusOrdersCreateUpdate"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Success Upload Payment Image",
+                        "description": "succes input status order",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "image_url": {
-                                            "type": "string"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/statusOrdersResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Status Orders"],
+                "summary": "Get All Status Orders",
+                "description": "Get all exist status orders in database",
+                "responses": {
+                    "200": {
+                        "description": "succes get all status orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/statusOrdersResponses"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/statusOrders/{statusId}": {
+            "get": {
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "tags": ["Status Orders"],
+                "summary": "Get Status Order By Id",
+                "description": "Get exist status orders in database by id",
+                "parameters": [{
+                    "name": "statusId",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "succes get status orders by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/categoriesResponse"
                                 }
                             }
                         }
@@ -695,6 +1083,14 @@
                 }
             },
 
+            "statusOrdersCreateUpdate": {
+                "type": "object",
+                "properties": {
+                    "status_name": {
+                        "type": "string"
+                    }
+                }
+            },
             "statusOrders": {
                 "type": "object",
                 "properties": {
@@ -777,9 +1173,6 @@
                     "image_url": {
                         "type": "string",
                         "nullable": true
-                    },
-                    "role": {
-                        "$ref": "#/components/schemas/roles"
                     }
                 }
             },
@@ -933,6 +1326,14 @@
                 }
             },
 
+            "categoriesCreateUpdate": {
+                "type": "object",
+                "properties": {
+                    "category_name": {
+                        "type": "string"
+                    }
+                }
+            },
             "categories": {
                 "type": "object",
                 "properties": {
@@ -979,17 +1380,45 @@
                 }
             },
 
+            "productsCreateorUpdate": {
+                "type": "object",
+                "properties": {
+                    "product_name": {
+                        "type": "string"
+                    },
+                    "category_id": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "number"
+                    },
+                    "qty": {
+                        "type": "number"
+                    },
+                    "image_url": {
+                        "type": "string"
+                    }
+                }
+            },
             "products": {
                 "type": "object",
                 "properties": {
-                    "id_product": {
+                    "id": {
                         "type": "number"
                     },
                     "product_name": {
                         "type": "string"
                     },
                     "category": {
-                        "$ref": "#/components/schemas/categories"
+                        "type": "object",
+                        "properties": {
+                            "id_category": {
+                                "type": "string"
+                            },
+                            "category_name": {
+                                "type": "string"
+                            }
+                        }
                     },
                     "price": {
                         "type": "number"
